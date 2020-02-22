@@ -1,0 +1,8 @@
+/.idea
+/.git
+
+/vendor
+/composer.lock
+
+/temp
+/coverage.*
