@@ -2,7 +2,7 @@
 
 namespace Tests\Surda\ValueObject;
 
-use Surda\ValueObject\ImportCounter\ImportCounter;
+use Surda\ValueObject\Counter\Counter;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -11,32 +11,37 @@ require __DIR__ . '/../../bootstrap.php';
 /**
  * @testCase
  */
-class ImportCounterTest extends TestCase
+class CounterTest extends TestCase
 {
-    public function testImportCounter()
+    public function testCounter()
     {
-        $counter = new ImportCounter();
+        $counter = new Counter();
 
         Assert::false($counter->isAdded());
         Assert::false($counter->isUpdated());
+        Assert::false($counter->isDeleted());
         Assert::false($counter->isSkipped());
         Assert::false($counter->isAddedOrUpdated());
         Assert::false($counter->isAnyIncrement());
 
         $counter->incrementAdd();
         $counter->incrementUpdate();
+        $counter->incrementDelete();
         $counter->incrementSkip();
 
         Assert::true($counter->isAdded());
         Assert::true($counter->isUpdated());
+        Assert::true($counter->isDeleted());
         Assert::true($counter->isSkipped());
         Assert::true($counter->isAddedOrUpdated());
+        Assert::true($counter->isAddedOrUpdatedOrDeleted());
+        Assert::true($counter->isAddedOrUpdatedOrDeletedOrSkipped());
         Assert::true($counter->isAnyIncrement());
     }
 
     public function testAddIncrement()
     {
-        $counter = new ImportCounter();
+        $counter = new Counter();
 
         Assert::false($counter->isAdded());
 
@@ -53,7 +58,7 @@ class ImportCounterTest extends TestCase
 
     public function testUpdateIncrement()
     {
-        $counter = new ImportCounter();
+        $counter = new Counter();
 
         Assert::false($counter->isUpdated());
 
@@ -68,9 +73,26 @@ class ImportCounterTest extends TestCase
         Assert::same(3, $counter->getUpdated());
     }
 
+    public function testDeleteIncrement()
+    {
+        $counter = new Counter();
+
+        Assert::false($counter->isDeleted());
+
+        $counter->incrementDelete();
+        Assert::same(1, $counter->getDeleted());
+        Assert::true($counter->isDeleted());
+        Assert::true($counter->isAddedOrUpdatedOrDeleted());
+        Assert::true($counter->isAnyIncrement());
+
+        $counter->incrementDelete();
+        $counter->incrementDelete();
+        Assert::same(3, $counter->getDeleted());
+    }
+
     public function testSkipIncrement()
     {
-        $counter = new ImportCounter();
+        $counter = new Counter();
 
         Assert::false($counter->isSkipped());
 
@@ -87,7 +109,7 @@ class ImportCounterTest extends TestCase
 
     public function testNotImported()
     {
-        $counter = new ImportCounter();
+        $counter = new Counter();
 
         Assert::false($counter->isNotImported());
         Assert::same(0, $counter->getNotImported());
@@ -99,4 +121,4 @@ class ImportCounterTest extends TestCase
     }
 }
 
-(new ImportCounterTest())->run();
+(new CounterTest())->run();

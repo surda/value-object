@@ -20,4 +20,4 @@ composer require surda/value-object
 
 - Avatar
 - Email address
-- Import counter
+- Counter

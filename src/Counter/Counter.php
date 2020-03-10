@@ -1,14 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Surda\ValueObject\ImportCounter;
+namespace Surda\ValueObject\Counter;
 
-class ImportCounter
+class Counter
 {
     /** @var int */
     private $added = 0;
 
     /** @var int */
     private $updated = 0;
+
+    /** @var int */
+    private $deleted = 0;
 
     /** @var int */
     private $skipped = 0;
@@ -24,6 +27,11 @@ class ImportCounter
     public function incrementUpdate(): void
     {
         $this->updated++;
+    }
+
+    public function incrementDelete(): void
+    {
+        $this->deleted++;
     }
 
     public function incrementSkip(): void
@@ -45,6 +53,14 @@ class ImportCounter
     public function getUpdated(): int
     {
         return $this->updated;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeleted(): int
+    {
+        return $this->deleted;
     }
 
     /**
@@ -74,6 +90,14 @@ class ImportCounter
     /**
      * @return bool
      */
+    public function isDeleted(): bool
+    {
+        return $this->deleted > 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function isSkipped(): bool
     {
         return $this->skipped > 0;
@@ -90,9 +114,25 @@ class ImportCounter
     /**
      * @return bool
      */
+    public function isAddedOrUpdatedOrDeleted(): bool
+    {
+        return $this->added > 0 || $this->updated > 0 || $this->deleted > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAddedOrUpdatedOrDeletedOrSkipped(): bool
+    {
+        return $this->added > 0 || $this->updated > 0 || $this->deleted > 0 || $this->skipped > 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function isAnyIncrement(): bool
     {
-        return $this->added > 0 || $this->updated > 0 || $this->skipped > 0;
+        return $this->isAddedOrUpdatedOrDeletedOrSkipped();
     }
 
     /**
@@ -100,7 +140,7 @@ class ImportCounter
      */
     public function getTotal(): int
     {
-        return $this->added + $this->updated + $this->skipped;
+        return $this->added + $this->updated + $this->deleted + $this->skipped;
     }
 
     /**
