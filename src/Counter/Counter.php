@@ -19,6 +19,9 @@ class Counter
     /** @var int */
     private $notImported = 0;
 
+    /** @var int */
+    private $count = 0;
+
     public function incrementAdd(): void
     {
         $this->added++;
@@ -37,6 +40,11 @@ class Counter
     public function incrementSkip(): void
     {
         $this->skipped++;
+    }
+
+    public function increment(): void
+    {
+        $this->count++;
     }
 
     /**
@@ -72,6 +80,14 @@ class Counter
     }
 
     /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+    /**
      * @return bool
      */
     public function isAdded(): bool
@@ -101,6 +117,14 @@ class Counter
     public function isSkipped(): bool
     {
         return $this->skipped > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCount(): bool
+    {
+        return $this->count > 0;
     }
 
     /**

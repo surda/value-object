@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Surda\ValueObject;
+namespace Tests\Surda\ValueObject\Counter;
 
 use Surda\ValueObject\Counter\Counter;
 use Tester\Assert;
@@ -23,11 +23,13 @@ class CounterTest extends TestCase
         Assert::false($counter->isSkipped());
         Assert::false($counter->isAddedOrUpdated());
         Assert::false($counter->isAnyIncrement());
+        Assert::false($counter->isCount());
 
         $counter->incrementAdd();
         $counter->incrementUpdate();
         $counter->incrementDelete();
         $counter->incrementSkip();
+        $counter->increment();
 
         Assert::true($counter->isAdded());
         Assert::true($counter->isUpdated());
@@ -37,6 +39,7 @@ class CounterTest extends TestCase
         Assert::true($counter->isAddedOrUpdatedOrDeleted());
         Assert::true($counter->isAddedOrUpdatedOrDeletedOrSkipped());
         Assert::true($counter->isAnyIncrement());
+        Assert::true($counter->isCount());
     }
 
     public function testAddIncrement()
@@ -118,6 +121,20 @@ class CounterTest extends TestCase
         $counter->setNotImported(10);
         Assert::same(10, $counter->getNotImported());
         Assert::true($counter->isNotImported());
+    }
+    public function testCount()
+    {
+        $counter = new Counter();
+
+        Assert::false($counter->isCount());
+
+        $counter->increment();
+        Assert::same(1, $counter->getCount());
+        Assert::true($counter->isCount());
+
+        $counter->increment();
+        $counter->increment();
+        Assert::same(3, $counter->getCount());
     }
 }
 
